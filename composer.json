@@ -1,0 +1,10 @@
+{
+    "name": "queensbridge/composer-installers",
+    "type": "composer-installer",
+    "autoload": {
+        "psr-0": {"Queensbridge\\Composer": "src/"}
+    },
+    "extra": {
+        "class": "Queensbridge\\Composer\\WordPressInstaller"
+    }
+}
