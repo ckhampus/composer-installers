@@ -13,23 +13,36 @@ class WordPressInstaller extends LibraryInstaller
     /**
      * Default prefix for installation packages.
      */
-    protected const PREFIX = 'wordpress-';
+    const PREFIX = 'wordpress-';
 
     /**
      * {@inheritDoc}
      */
     public function getInstallPath(PackageInterface $package)
     {
-        $type = substr($package->getType(), 0, strlen(self::PREFIX));
+        $type = substr($package->getType(), strlen(self::PREFIX));
+
+        $prettyName = $package->getPrettyName();
+        if (strpos($prettyName, '/') !== false) {
+            list($vendor, $name) = explode('/', $prettyName);
+        } else {
+            $vendor = '';
+            $name = $prettyName;
+        }
 
         switch ($type) {
             case 'core':
-                return $package->getPrettyName();
+                $path = $name.'/';
+                break;
             case 'theme':
-                return 'content/themes/'.$package->getPrettyName();
+                $path = 'content/themes/'.$name.'/';
+                break;
             case 'plugin':
-                return 'content/plugins/'.$package->getPrettyName();
+                $path = 'content/plugins/'.$name.'/';
+                break;
         }
+
+        return $path;
     }
 
     /**
@@ -37,7 +50,7 @@ class WordPressInstaller extends LibraryInstaller
      */
     public function supports($packageType)
     {
-        $type = substr($packageType, 0, strlen(self::PREFIX));
+        $type = substr($packageType, strlen(self::PREFIX));
 
         return in_array($type, array(
             'core',

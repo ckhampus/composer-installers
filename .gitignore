@@ -6,3 +6,8 @@ Desktop.ini
 
 # Mac crap
 .DS_Store
+
+bin/
+vendor/
+build/
+composer.phar
