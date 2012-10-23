@@ -4,6 +4,7 @@ namespace Queensbridge\Tests\Composer;
 use Composer\Installers\Installer;
 use Composer\Util\Filesystem;
 use Composer\Package\Package;
+use Composer\Package\RootPackage;
 use Composer\Composer;
 use Composer\Config;
 
@@ -105,6 +106,25 @@ class WordPressInstallerTest extends TestCase
         $package->setType($type);
         $result = $installer->getInstallPath($package);
         $this->assertEquals($path, $result);
+    }
+
+    /**
+     * testCustomInstallPath
+     */
+    public function testCustomInstallPath()
+    {
+        $installer = new WordPressInstaller($this->io, $this->composer);
+        $package = new Package('queensbridge/fancy-plugin', '1.0.0', '1.0.0');
+        $package->setType('wordpress-plugin');
+
+        $consumerPackage = new RootPackage('foo/bar', '1.0.0', '1.0.0');
+        $this->composer->setPackage($consumerPackage);
+        $consumerPackage->setExtra(array(
+            'content-dir' => 'wordpress/wp-content/',
+        ));
+
+        $result = $installer->getInstallPath($package);
+        $this->assertEquals('wordpress/wp-content/plugins/fancy-plugin/', $result);
     }
 
     /**

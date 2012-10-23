@@ -30,15 +30,25 @@ class WordPressInstaller extends LibraryInstaller
             $name = $prettyName;
         }
 
+        $path = 'content/';
+
+        if ($this->composer->getPackage()) {
+            $extra = $this->composer->getPackage()->getExtra();
+
+            if (!empty($extra['content-dir'])) {
+                $path = $extra['content-dir'];
+            }
+        }
+
         switch ($type) {
             case 'core':
                 $path = $name.'/';
                 break;
             case 'theme':
-                $path = 'content/themes/'.$name.'/';
+                $path .= 'themes/'.$name.'/';
                 break;
             case 'plugin':
-                $path = 'content/plugins/'.$name.'/';
+                $path .= 'plugins/'.$name.'/';
                 break;
         }
 

@@ -20,8 +20,6 @@ class CookbookInstaller extends LibraryInstaller
      */
     public function getInstallPath(PackageInterface $package)
     {
-        $type = $package->getType();
-
         $prettyName = $package->getPrettyName();
         if (strpos($prettyName, '/') !== false) {
             list($vendor, $name) = explode('/', $prettyName);
@@ -30,10 +28,14 @@ class CookbookInstaller extends LibraryInstaller
             $name = $prettyName;
         }
 
-        $path = '';
+        $path = 'cookbooks/'.$name.'/';
 
-        if ($type === self::TYPE) {
-            $path = 'cookbooks/'.$name.'/';
+        if ($this->composer->getPackage()) {
+            $extra = $this->composer->getPackage()->getExtra();
+
+            if (!empty($extra['cookbooks-dir'])) {
+                $path = $extra['cookbooks-dir'].$name.'/';
+            }
         }
 
         return $path;

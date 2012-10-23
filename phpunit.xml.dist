@@ -5,7 +5,8 @@
          backupGlobals="false"
          backupStaticAttributes="false"
          strict="true"
-         verbose="true">
+         verbose="true"
+         colors="true">
   <testsuites>
     <testsuite name="composer-installers">
       <directory suffix="Test.php">tests</directory>

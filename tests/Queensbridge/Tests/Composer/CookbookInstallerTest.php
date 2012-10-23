@@ -4,6 +4,7 @@ namespace Queensbridge\Tests\Composer;
 use Composer\Installers\Installer;
 use Composer\Util\Filesystem;
 use Composer\Package\Package;
+use Composer\Package\RootPackage;
 use Composer\Composer;
 use Composer\Config;
 
@@ -106,13 +107,32 @@ class CookbookInstallerTest extends TestCase
     }
 
     /**
+     * testCustomInstallPath
+     */
+    public function testCustomInstallPath()
+    {
+        $installer = new CookbookInstaller($this->io, $this->composer);
+        $package = new Package('fancy-cookbook', '1.0.0', '1.0.0');
+        $package->setType('chef-cookbook');
+
+        $consumerPackage = new RootPackage('foo/bar', '1.0.0', '1.0.0');
+        $this->composer->setPackage($consumerPackage);
+        $consumerPackage->setExtra(array(
+            'cookbooks-dir' => 'chef/cookbooks/',
+        ));
+
+        $result = $installer->getInstallPath($package);
+        $this->assertEquals('chef/cookbooks/fancy-cookbook/', $result);
+    }
+
+    /**
      * dataFormTestInstallPath
      */
     public function dataForTestInstallPath()
     {
         return array(
-            array('chef-cookbook', 'cookbooks/real/', 'queensbridge/real'),
-            array('chef-cookbook', 'cookbooks/no-vendor-real/', 'no-vendor-real')
+            array('chef-cookbook', 'cookbooks/cookbook/', 'queensbridge/cookbook'),
+            array('chef-cookbook', 'cookbooks/no-vendor-cookbook/', 'no-vendor-cookbook')
         );
     }
 
