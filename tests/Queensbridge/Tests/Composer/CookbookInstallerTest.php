@@ -1,5 +1,5 @@
 <?php
-namespace Queensbridge\Composer;
+namespace Queensbridge\Tests\Composer;
 
 use Composer\Installers\Installer;
 use Composer\Util\Filesystem;
@@ -7,9 +7,9 @@ use Composer\Package\Package;
 use Composer\Composer;
 use Composer\Config;
 
-use Queensbridge\Composer\WordPressInstaller;
+use Queensbridge\Composer\CookbookInstaller;
 
-class WordPressInstallerTest extends TestCase
+class CookbookInstallerTest extends TestCase
 {
     private $composer;
     private $config;
@@ -75,7 +75,7 @@ class WordPressInstallerTest extends TestCase
      */
     public function testSupports($type, $expected)
     {
-        $installer = new WordPressInstaller($this->io, $this->composer);
+        $installer = new CookbookInstaller($this->io, $this->composer);
         $this->assertSame($expected, $installer->supports($type), sprintf('Failed to show support for %s', $type));
     }
 
@@ -85,10 +85,8 @@ class WordPressInstallerTest extends TestCase
     public function dataForTestSupport()
     {
         return array(
-            array('wordpress', false),
-            array('wordpress-core', true),
-            array('wordpress-theme', true),
-            array('wordpress-plugin', true)
+            array('chef-cookbook', true),
+            array('cookbooks', false)
         );
     }
 
@@ -99,7 +97,7 @@ class WordPressInstallerTest extends TestCase
      */
     public function testInstallPath($type, $path, $name)
     {
-        $installer = new WordPressInstaller($this->io, $this->composer);
+        $installer = new CookbookInstaller($this->io, $this->composer);
         $package = new Package($name, '1.0.0', '1.0.0');
 
         $package->setType($type);
@@ -113,10 +111,8 @@ class WordPressInstallerTest extends TestCase
     public function dataForTestInstallPath()
     {
         return array(
-            array('wordpress-core', 'wordpress/', 'queensbridge/wordpress'),
-            array('wordpress-theme', 'content/themes/custom-theme/', 'queensbridge/custom-theme'),
-            array('wordpress-plugin', 'content/plugins/custom-plugin/', 'queensbridge/custom-plugin'),
-            array('wordpress-plugin', 'content/plugins/no-vendor-plugin/', 'no-vendor-plugin')
+            array('chef-cookbook', 'cookbooks/real/', 'queensbridge/real'),
+            array('chef-cookbook', 'cookbooks/no-vendor-real/', 'no-vendor-real')
         );
     }
 
