@@ -10,7 +10,10 @@
     "fabpot/php-cs-fixer": "dev-master"
   },
   "extra": {
-    "class": "Queensbridge\\Composer\\WordPressInstaller"
+    "class": [
+      "Queensbridge\\Composer\\WordPressInstaller",
+      "Queensbridge\\Composer\\CookbookInstaller"
+    ]
   },
   "config": {
     "bin-dir": "bin"
