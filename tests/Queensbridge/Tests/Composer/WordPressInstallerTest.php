@@ -102,33 +102,36 @@ class WordPressInstallerTest extends TestCase
     {
         $installer = new WordPressInstaller($this->io, $this->composer);
         $package = new Package($name, '1.0.0', '1.0.0');
-
         $package->setType($type);
+
         $result = $installer->getInstallPath($package);
         $this->assertEquals($path, $result);
     }
 
     /**
      * testCustomInstallPath
+     *
+     * @dataProvider dataForTestCustomInstallPath
      */
-    public function testCustomInstallPath()
+    public function testCustomInstallPath($type, $path, $name)
     {
         $installer = new WordPressInstaller($this->io, $this->composer);
-        $package = new Package('queensbridge/fancy-plugin', '1.0.0', '1.0.0');
-        $package->setType('wordpress-plugin');
+        $package = new Package($name, '1.0.0', '1.0.0');
+        $package->setType($type);
 
         $consumerPackage = new RootPackage('foo/bar', '1.0.0', '1.0.0');
         $this->composer->setPackage($consumerPackage);
         $consumerPackage->setExtra(array(
+            'wordpress-dir' => 'wp/',
             'content-dir' => 'wordpress/wp-content/',
         ));
 
         $result = $installer->getInstallPath($package);
-        $this->assertEquals('wordpress/wp-content/plugins/fancy-plugin/', $result);
+        $this->assertEquals($path, $result);
     }
 
     /**
-     * dataFormTestInstallPath
+     * dataForTestInstallPath
      */
     public function dataForTestInstallPath()
     {
@@ -137,6 +140,19 @@ class WordPressInstallerTest extends TestCase
             array('wordpress-theme', 'content/themes/custom-theme/', 'queensbridge/custom-theme'),
             array('wordpress-plugin', 'content/plugins/custom-plugin/', 'queensbridge/custom-plugin'),
             array('wordpress-plugin', 'content/plugins/no-vendor-plugin/', 'no-vendor-plugin')
+        );
+    }
+
+    /**
+     * dataForTestCustomInstallPath
+     */
+    public function dataForTestCustomInstallPath()
+    {
+        return array(
+            array('wordpress-core', 'wp/', 'queensbridge/wordpress'),
+            array('wordpress-theme', 'wordpress/wp-content/themes/custom-theme/', 'queensbridge/custom-theme'),
+            array('wordpress-plugin', 'wordpress/wp-content/plugins/custom-plugin/', 'queensbridge/custom-plugin'),
+            array('wordpress-plugin', 'wordpress/wp-content/plugins/no-vendor-plugin/', 'no-vendor-plugin')
         );
     }
 

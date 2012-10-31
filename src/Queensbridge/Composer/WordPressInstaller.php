@@ -31,6 +31,7 @@ class WordPressInstaller extends LibraryInstaller
         }
 
         $path = 'content/';
+        $wp_path = '';
 
         if ($this->composer->getPackage()) {
             $extra = $this->composer->getPackage()->getExtra();
@@ -38,11 +39,15 @@ class WordPressInstaller extends LibraryInstaller
             if (!empty($extra['content-dir'])) {
                 $path = $extra['content-dir'];
             }
+
+            if (!empty($extra['wordpress-dir'])) {
+                $wp_path = $extra['wordpress-dir'];
+            }
         }
 
         switch ($type) {
             case 'core':
-                $path = $name.'/';
+                $path = empty($wp_path) ? $name.'/' : $wp_path;
                 break;
             case 'theme':
                 $path .= 'themes/'.$name.'/';
