@@ -1,5 +1,5 @@
 <?php
-namespace Queensbridge\Tests\Composer;
+namespace Queensbridge\Tests\Composer\Installers;
 
 use Composer\Installers\Installer;
 use Composer\Util\Filesystem;
@@ -8,9 +8,9 @@ use Composer\Package\RootPackage;
 use Composer\Composer;
 use Composer\Config;
 
-use Queensbridge\Composer\WordPressInstaller;
+use Queensbridge\Composer\Installers\CookbookInstaller;
 
-class WordPressInstallerTest extends TestCase
+class CookbookInstallerTest extends TestCase
 {
     private $composer;
     private $config;
@@ -76,7 +76,7 @@ class WordPressInstallerTest extends TestCase
      */
     public function testSupports($type, $expected)
     {
-        $installer = new WordPressInstaller($this->io, $this->composer);
+        $installer = new CookbookInstaller($this->io, $this->composer);
         $this->assertSame($expected, $installer->supports($type), sprintf('Failed to show support for %s', $type));
     }
 
@@ -86,10 +86,8 @@ class WordPressInstallerTest extends TestCase
     public function dataForTestSupport()
     {
         return array(
-            array('wordpress', false),
-            array('wordpress-core', true),
-            array('wordpress-theme', true),
-            array('wordpress-plugin', true)
+            array('chef-cookbook', true),
+            array('cookbooks', false)
         );
     }
 
@@ -100,59 +98,41 @@ class WordPressInstallerTest extends TestCase
      */
     public function testInstallPath($type, $path, $name)
     {
-        $installer = new WordPressInstaller($this->io, $this->composer);
+        $installer = new CookbookInstaller($this->io, $this->composer);
         $package = new Package($name, '1.0.0', '1.0.0');
-        $package->setType($type);
 
+        $package->setType($type);
         $result = $installer->getInstallPath($package);
         $this->assertEquals($path, $result);
     }
 
     /**
      * testCustomInstallPath
-     *
-     * @dataProvider dataForTestCustomInstallPath
      */
-    public function testCustomInstallPath($type, $path, $name)
+    public function testCustomInstallPath()
     {
-        $installer = new WordPressInstaller($this->io, $this->composer);
-        $package = new Package($name, '1.0.0', '1.0.0');
-        $package->setType($type);
+        $installer = new CookbookInstaller($this->io, $this->composer);
+        $package = new Package('fancy-cookbook', '1.0.0', '1.0.0');
+        $package->setType('chef-cookbook');
 
         $consumerPackage = new RootPackage('foo/bar', '1.0.0', '1.0.0');
         $this->composer->setPackage($consumerPackage);
         $consumerPackage->setExtra(array(
-            'wordpress-dir' => 'wp/',
-            'content-dir' => 'wordpress/wp-content/',
+            'cookbooks-dir' => 'chef/cookbooks/',
         ));
 
         $result = $installer->getInstallPath($package);
-        $this->assertEquals($path, $result);
+        $this->assertEquals('chef/cookbooks/fancy-cookbook/', $result);
     }
 
     /**
-     * dataForTestInstallPath
+     * dataFormTestInstallPath
      */
     public function dataForTestInstallPath()
     {
         return array(
-            array('wordpress-core', 'wordpress/', 'queensbridge/wordpress'),
-            array('wordpress-theme', 'content/themes/custom-theme/', 'queensbridge/custom-theme'),
-            array('wordpress-plugin', 'content/plugins/custom-plugin/', 'queensbridge/custom-plugin'),
-            array('wordpress-plugin', 'content/plugins/no-vendor-plugin/', 'no-vendor-plugin')
-        );
-    }
-
-    /**
-     * dataForTestCustomInstallPath
-     */
-    public function dataForTestCustomInstallPath()
-    {
-        return array(
-            array('wordpress-core', 'wp/', 'queensbridge/wordpress'),
-            array('wordpress-theme', 'wordpress/wp-content/themes/custom-theme/', 'queensbridge/custom-theme'),
-            array('wordpress-plugin', 'wordpress/wp-content/plugins/custom-plugin/', 'queensbridge/custom-plugin'),
-            array('wordpress-plugin', 'wordpress/wp-content/plugins/no-vendor-plugin/', 'no-vendor-plugin')
+            array('chef-cookbook', 'cookbooks/cookbook/', 'queensbridge/cookbook'),
+            array('chef-cookbook', 'cookbooks/no-vendor-cookbook/', 'no-vendor-cookbook')
         );
     }
 
