@@ -31,10 +31,13 @@ class WordPressScriptHandler
     public static function addPathToIgnore(Event $event)
     {
         $package = $event->getOperation()->getPackage();
+        $installer = new WordPressInstaller($event->getIO(), $event->getComposer());
 
-        if (file_exists('.gitignore') && strpos($package->getType(), 'wordpress-') === 0) {
+        if (file_exists('.gitignore') && $installer->supports($package->getType())) {
+            $path = $installer->getInstallPath($package);
+
             $content = file_get_contents('.gitignore');
-            $content .= $package->getTargetDir();
+            $content .= PHP_EOL.$path;
             file_put_contents('.gitignore', $content);
         }
     }
@@ -42,10 +45,13 @@ class WordPressScriptHandler
     public static function removePathToIgnore(Event $event)
     {
         $package = $event->getOperation()->getPackage();
+        $installer = new WordPressInstaller($event->getIO(), $event->getComposer());
 
-        if (file_exists('.gitignore') && strpos($package->getType(), 'wordpress-') === 0) {
+        if (file_exists('.gitignore') && $installer->supports($package->getType())) {
+            $path = $installer->getInstallPath($package);
+
             $content = file_get_contents('.gitignore');
-            $content = str_replace($package->getTargetDir(), '', $content);
+            $content = str_replace(PHP_EOL.$path, '', $content);
             file_put_contents('.gitignore', $content);
         }
     }
