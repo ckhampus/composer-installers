@@ -1,6 +1,6 @@
 <?php
 
-namespace Queensbridge\Composer;
+namespace Queensbridge\Composer\Installers;
 
 use Composer\Package\PackageInterface;
 use Composer\Installer\LibraryInstaller;

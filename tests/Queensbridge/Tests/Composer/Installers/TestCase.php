@@ -10,7 +10,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Queensbridge\Tests\Composer;
+namespace Queensbridge\Tests\Composer\Installers;
 
 use Composer\Package\Version\VersionParser;
 use Composer\Package\Package;
