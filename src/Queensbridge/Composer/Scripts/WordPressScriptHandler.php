@@ -2,6 +2,8 @@
 
 namespace Queensbridge\Composer\Scripts;
 
+use Queensbridge\Composer\Installers\WordPressInstaller;
+
 use Composer\Script\Event;
 
 class WordPressScriptHandler
