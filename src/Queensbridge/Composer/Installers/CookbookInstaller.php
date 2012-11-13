@@ -34,7 +34,7 @@ class CookbookInstaller extends LibraryInstaller
             $extra = $this->composer->getPackage()->getExtra();
 
             if (!empty($extra['cookbooks-dir'])) {
-                $path = $extra['cookbooks-dir'].$name.'/';
+                $path = trim($extra['cookbooks-dir'], '/').'/'.$name.'/';
             }
         }
 

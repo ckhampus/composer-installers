@@ -37,17 +37,17 @@ class WordPressInstaller extends LibraryInstaller
             $extra = $this->composer->getPackage()->getExtra();
 
             if (!empty($extra['content-dir'])) {
-                $path = $extra['content-dir'];
+                $path = trim($extra['content-dir'], '/').'/';
             }
 
             if (!empty($extra['wordpress-dir'])) {
-                $wp_path = $extra['wordpress-dir'];
+                $wp_path = trim($extra['wordpress-dir'], '/');
             }
         }
 
         switch ($type) {
             case 'core':
-                $path = empty($wp_path) ? $name.'/' : $wp_path;
+                $path = empty($wp_path) ? $name.'/' : $wp_path.'/';
                 break;
             case 'theme':
                 $path .= 'themes/'.$name.'/';
