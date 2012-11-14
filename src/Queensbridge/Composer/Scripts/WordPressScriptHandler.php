@@ -39,8 +39,15 @@ class WordPressScriptHandler
             $path = $installer->getInstallPath($package);
 
             $content = file_get_contents('.gitignore');
-            $content .= PHP_EOL.$path;
-            file_put_contents('.gitignore', $content);
+            $content = explode(PHP_EOL, $content);
+            array_walk($content, 'trim');
+
+            if(($key = array_search(__DIR__, $content)) === false) {
+                $content[] = __DIR__;
+                $content = implode(PHP_EOL, $content);
+                file_put_contents('.gitignore', $content);
+            }
+
         }
     }
 
@@ -53,8 +60,14 @@ class WordPressScriptHandler
             $path = $installer->getInstallPath($package);
 
             $content = file_get_contents('.gitignore');
-            $content = str_replace(PHP_EOL.$path, '', $content);
-            file_put_contents('.gitignore', $content);
+            $content = explode(PHP_EOL, $content);
+            array_walk($content, 'trim');
+
+            if(($key = array_search(__DIR__, $content)) !== false) {
+                unset($content[$key]);
+                $content = implode(PHP_EOL, $content);
+                file_put_contents('.gitignore', $content);
+            }
         }
     }
 
